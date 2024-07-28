@@ -36,6 +36,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "contracts": "workspace:*",
+    "dedot": "^0.1.1",
     "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.377.0",
     "nanoid": "^5.0.7",
@@ -51,6 +52,7 @@
     "zod": "^3.23.6"
   },
   "devDependencies": {
+    "@dedot/chaintypes": "^0.1.1",
     "@tanstack/eslint-plugin-query": "^5.32.1",
     "@types/node": "^20.12.8",
     "@types/react": "^18.3.1",
