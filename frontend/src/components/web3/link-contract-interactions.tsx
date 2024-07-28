@@ -4,23 +4,9 @@ import Left from "@/assets/left.svg"
 import Logo from "@/assets/logo.svg"
 import Right from "@/assets/right.svg"
 import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { ContractIds } from "@/deployments/deployments"
 import { zodResolver } from "@hookform/resolvers/zod"
-import {
-  contractQuery,
-  decodeOutput,
-  useInkathon,
-  useRegisteredContract,
-} from "@scio-labs/use-inkathon"
 import { Copy } from "lucide-react"
 import { customAlphabet } from "nanoid"
 import { FC, useCallback, useMemo } from "react"
@@ -28,7 +14,10 @@ import { SubmitHandler, useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 import { z } from "zod"
 import { cn } from "../../utils/cn"
-import { contractTxWithToast } from "../../utils/contract-tx-with-toast"
+import { useInkathon } from "@/provider.tsx"
+import useLinkContract from "@/hooks/useLinkContract.ts"
+import { stringToHex } from "dedot/utils"
+import type { LinkSlugCreationMode } from "@/contracts/link/types"
 
 const slugParser = z
   .string()
@@ -44,8 +33,8 @@ const formSchema = z.object({
 })
 
 export const LinkContractInteractions: FC = () => {
-  const { api, activeAccount, connect, isConnected } = useInkathon()
-  const { contract } = useRegisteredContract(ContractIds.Link)
+  const { api, activeAccount, connect, isConnected, activeSigner } = useInkathon()
+  const { contract } = useLinkContract()
 
   const initialSlug = useMemo(
     () => customAlphabet("abcdefghijklmnopqrstuvwxyz", 5)(),
@@ -60,33 +49,6 @@ export const LinkContractInteractions: FC = () => {
     },
   })
 
-  const dryRun = useCallback(
-    async ({ slug, url }: { slug: string; url: string }) => {
-      if (!contract || !api || !slug || !url || !activeAccount) return
-
-      const shortenOutcome = await contractQuery(
-        api,
-        activeAccount?.address,
-        contract,
-        "shorten",
-        undefined,
-        [{ New: slug }, url],
-      )
-      const shortenResult = decodeOutput(shortenOutcome, contract, "shorten")
-
-      if (shortenOutcome.result.isErr && shortenOutcome.result.asErr.isModule) {
-        const { docs, method, section } = api.registry.findMetaError(
-          shortenOutcome.result.asErr.asModule,
-        )
-
-        shortenResult.decodedOutput = `${section}.${method}: ${docs.join(" ")}`
-      }
-
-      return shortenResult
-    },
-    [contract, api, activeAccount],
-  )
-
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = useCallback(
     async ({ slug, url }) => {
       if (!api) {
@@ -98,24 +60,55 @@ export const LinkContractInteractions: FC = () => {
       if (!activeAccount) {
         throw new Error("Signer not available")
       }
+      // Dry run
+      const linkMode: LinkSlugCreationMode = { type: 'New', value: stringToHex(slug) };
+      const result = await contract.query.shorten(
+        linkMode, url,
+        { caller: activeAccount.address }
+      );
 
-      const outcome = await dryRun({ slug, url })
-      if (outcome?.isError) {
-        console.error({ outcome })
-        toast.error(outcome.decodedOutput)
+      console.log('dryrun', result);
+
+      if (!result.isOk) {
+        const dispatchError = result.err;
+        console.error(dispatchError);
+        const errorMeta = api.registry.findErrorMeta(dispatchError);
+
+        if (errorMeta) {
+          const { pallet, name, docs } = errorMeta;
+          toast.error(`${pallet}:${name} - ${docs.join('')}`)
+        } else {
+          toast.error(`ERROR: ${JSON.stringify(dispatchError)}`);
+        }
         return
       }
 
-      return contractTxWithToast(
-        api,
-        activeAccount.address,
-        contract,
-        "shorten",
-        {},
-        [{ DeduplicateOrNew: slug }, url],
-      )
+      if (result.data.isErr) {
+        toast.error(`ERROR: ${JSON.stringify(result.data.err)}`);
+
+        return;
+      }
+
+      await contract.tx.shorten(linkMode, url, { gasLimit: result.raw.gasRequired})
+        .signAndSend(activeAccount.address, { signer: activeSigner as any }, (result) => {
+          const { status } = result;
+          console.log(status);
+
+          if (status.type === 'BestChainBlockIncluded' || status.type === 'Finalized') {
+            toast.success('Success!!');
+          }
+        })
+
+      // return contractTxWithToast(
+      //   api,
+      //   activeAccount.address,
+      //   contract,
+      //   "shorten",
+      //   {},
+      //   [{ DeduplicateOrNew: slug }, url],
+      // )
     },
-    [activeAccount, api, contract, dryRun],
+    [activeAccount, api, contract],
   )
 
   return (

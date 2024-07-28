@@ -1,39 +1,30 @@
-import { useInkathon } from "@scio-labs/use-inkathon"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo } from "react"
 import Lottie from "react-lottie"
 import animationData from "../../assets/resolve.json"
 import { Footer } from "./footer"
 import toast from "react-hot-toast"
-import { DedotClient, WsProvider } from "dedot"
-import { Contract } from "dedot/contracts"
-import { LinkContractApi } from "@/contracts/link"
-import { hexToString } from "@polkadot/util"
+import { hexToString } from "dedot/utils"
+import { useInkathon } from "@/provider.tsx"
+import useLinkContract from "@/hooks/useLinkContract.ts"
 
 const DELAY = 6000
 
+const DEFAULT_CALLER = '5EeG3x2qiUMU8LkRz4WGyy9kFhLY3u1AQwZz9aidvis58jqj';
+
 export const Resolve: React.FC<{ slug: string }> = ({ slug }) => {
-  const { activeAccount, activeChain, deployments } = useInkathon();
-  const [client, setClient] = useState<DedotClient>();
+  const { activeAccount } = useInkathon();
+  const { contract } = useLinkContract();
 
   const mounted = useMemo(() => {
     return Date.now()
   }, [])
 
   useEffect(() => {
-    if (!activeChain) return;
-
-    DedotClient.new(new WsProvider(activeChain.rpcUrls[0]))
-      .then(setClient);
-  }, [activeChain]);
-
-  useEffect(() => {
-    if (!client || !deployments || !activeChain) return;
+    if (!contract) return;
 
     (async () => {
-      const deployment = deployments.find(d => activeChain.network === d.networkId)!;
-
-      const contract = new Contract<LinkContractApi>(client, deployment.abi as any, deployment.address.toString());
-      const result = await contract.query.resolve(slug, { caller: activeAccount?.address || '5EeG3x2qiUMU8LkRz4WGyy9kFhLY3u1AQwZz9aidvis58jqj' });
+      const caller = activeAccount?.address || DEFAULT_CALLER;
+      const result = await contract.query.resolve(slug, { caller });
 
       if (result.isOk && result.data.isOk) {
         if (result.data.value) {
@@ -61,7 +52,7 @@ export const Resolve: React.FC<{ slug: string }> = ({ slug }) => {
         toast.error("Unable to resolve link")
       }
     })();
-  }, [client, deployments])
+  }, [contract])
 
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center">

@@ -4,9 +4,9 @@ import {
   ContractTxResult,
   SubstrateExplorer,
   contractTx,
-  useInkathon,
 } from "@scio-labs/use-inkathon"
 import { toast } from "react-hot-toast"
+import { useInkathon } from "@/provider.tsx"
 
 type ContractTxWithToastParams = Parameters<typeof contractTx>
 
