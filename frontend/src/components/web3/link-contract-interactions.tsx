@@ -18,6 +18,8 @@ import { useInkathon } from "@/provider.tsx"
 import useLinkContract from "@/hooks/useLinkContract.ts"
 import { stringToHex } from "dedot/utils"
 import type { LinkSlugCreationMode } from "@/contracts/link/types"
+import { ContractTxResult, contractTxWithToast } from "@/utils/contract-tx-with-toast.tsx"
+import { DispatchError } from 'dedot/codecs';
 
 const slugParser = z
   .string()
@@ -45,68 +47,93 @@ export const LinkContractInteractions: FC = () => {
     resolver: zodResolver(formSchema),
     mode: "onBlur",
     defaultValues: {
+      url: '',
       slug: initialSlug,
     },
-  })
+  });
+
+  const getDispatchErrorMessage = (dispatchError: DispatchError) => {
+    const errorMeta = api!.registry.findErrorMeta(dispatchError);
+
+    if (errorMeta) {
+      const { pallet, name, docs } = errorMeta;
+      return `${pallet}:${name} - ${docs.join('')}`
+    } else {
+      return `ERROR: ${JSON.stringify(dispatchError)}`;
+    }
+  }
+
+  const dryRun = async (mode: LinkSlugCreationMode, url: string) => {
+    const result = await contract!.query.shorten(
+      mode, url,
+      { caller: activeAccount!.address }
+    );
+
+    console.log('dry-run', result);
+
+    if (!result.isOk) {
+      throw new Error(getDispatchErrorMessage(result.err));
+    }
+
+    if (result.data.isErr) {
+      throw new Error(`ERROR: ${JSON.stringify(result.data.err)}`);
+    }
+
+    if (result.data.value.isErr) {
+      throw new Error(`ERROR: ${result.data.value.err}`);
+    }
+
+    return {
+      result: result.data.value.value,
+      raw: result.raw
+    }
+  }
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = useCallback(
     async ({ slug, url }) => {
-      if (!api) {
-        throw new Error("Api not available")
-      }
-      if (!contract) {
-        throw new Error("Contract not available")
-      }
-      if (!activeAccount) {
-        throw new Error("Signer not available")
-      }
-      // Dry run
-      const linkMode: LinkSlugCreationMode = { type: 'New', value: stringToHex(slug) };
-      const result = await contract.query.shorten(
-        linkMode, url,
-        { caller: activeAccount.address }
-      );
-
-      console.log('dryrun', result);
-
-      if (!result.isOk) {
-        const dispatchError = result.err;
-        console.error(dispatchError);
-        const errorMeta = api.registry.findErrorMeta(dispatchError);
-
-        if (errorMeta) {
-          const { pallet, name, docs } = errorMeta;
-          toast.error(`${pallet}:${name} - ${docs.join('')}`)
-        } else {
-          toast.error(`ERROR: ${JSON.stringify(dispatchError)}`);
+      try {
+        if (!api) {
+          throw new Error("Api not available")
         }
-        return
+        if (!contract) {
+          throw new Error("Contract not available")
+        }
+        if (!activeAccount) {
+          throw new Error("Signer not available")
+        }
+
+        // Dry run
+        const linkMode: LinkSlugCreationMode = { type: 'New', value: stringToHex(slug) };
+
+        const dryRunResult = await dryRun(linkMode, url);
+
+        const shortenUrl = async (): Promise<ContractTxResult> => {
+          return new Promise<ContractTxResult>((resolve, reject) => {
+            contract.tx.shorten(linkMode, url, { gasLimit: dryRunResult.raw.gasRequired})
+              .signAndSend(activeAccount.address, { signer: activeSigner as any }, (result) => {
+                const { status, dispatchError, txHash } = result;
+                console.log(status);
+
+                if (status.type === 'BestChainBlockIncluded' || status.type === 'Finalized') {
+                  if (dispatchError) {
+                    reject(getDispatchErrorMessage(dispatchError));
+                  } else {
+                    resolve({
+                      extrinsicHash: txHash,
+                      blockHash: status.value.blockHash
+                    });
+                  }
+                } else if (status.type === 'Invalid' || status.type === 'Drop') {
+                  reject(`Tx ${status.type}`);
+                }
+              })
+          })
+        }
+
+        return contractTxWithToast(shortenUrl())
+      } catch (e: any) {
+        toast.error(e.message);
       }
-
-      if (result.data.isErr) {
-        toast.error(`ERROR: ${JSON.stringify(result.data.err)}`);
-
-        return;
-      }
-
-      await contract.tx.shorten(linkMode, url, { gasLimit: result.raw.gasRequired})
-        .signAndSend(activeAccount.address, { signer: activeSigner as any }, (result) => {
-          const { status } = result;
-          console.log(status);
-
-          if (status.type === 'BestChainBlockIncluded' || status.type === 'Finalized') {
-            toast.success('Success!!');
-          }
-        })
-
-      // return contractTxWithToast(
-      //   api,
-      //   activeAccount.address,
-      //   contract,
-      //   "shorten",
-      //   {},
-      //   [{ DeduplicateOrNew: slug }, url],
-      // )
     },
     [activeAccount, api, contract],
   )
