@@ -35,7 +35,7 @@ const formSchema = z.object({
 })
 
 export const LinkContractInteractions: FC = () => {
-  const { api, activeAccount, connect, isConnected, activeSigner } = useInkathon()
+  const { api, activeAccount, connect, isConnected, activeSigner, activeChain } = useInkathon()
   const { contract } = useLinkContract()
 
   const initialSlug = useMemo(
@@ -138,6 +138,10 @@ export const LinkContractInteractions: FC = () => {
     [activeAccount, api, contract],
   )
 
+  const host = useMemo<string>(() => {
+    return activeChain?.network === 'development' ? 'http://localhost:5173' : 'https://tiny.ink'
+  }, [activeChain]);
+
   return (
     <div className="flex w-screen min-w-[16rem] max-w-[748px] grow flex-col px-4">
       <div className="relative flex h-[180px] flex-row items-start justify-center">
@@ -225,14 +229,14 @@ export const LinkContractInteractions: FC = () => {
 
               <div className="mb-1 flex min-h-14 w-full flex-row items-center justify-between rounded-md  bg-ink-border px-4 py-3 text-xl text-white">
                 <a
-                  href={`https://tiny.ink/${encodeURI(
+                  href={`${host}/${encodeURI(
                     form.watch("slug").toLowerCase(),
                   )}`}
                   className="underline"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  {`https://tiny.ink/${encodeURI(
+                  {`${host}/${encodeURI(
                     form.watch("slug").toLowerCase(),
                   )}`}
                 </a>
