@@ -33,10 +33,10 @@ const slugParser = z
 const formSchema = z.object({
   url: z.string().url(),
   slug: slugParser,
-})
+});
 
 export const LinkContractInteractions: FC = () => {
-  const { api, activeAccount, connect, isConnected, activeSigner, activeChain } = useInkathon()
+  const { api, activeAccount, connect, isConnected, activeChain } = useInkathon()
   const { contract } = useLinkContract()
 
   const initialSlug = useMemo(
@@ -113,7 +113,7 @@ export const LinkContractInteractions: FC = () => {
         const shortenUrl = async (): Promise<ContractTxResult> => {
           return new Promise<ContractTxResult>((resolve, reject) => {
             contract.tx.shorten(linkMode, url, { gasLimit: dryRunResult.raw.gasRequired})
-              .signAndSend(activeAccount.address, { signer: activeSigner as any }, (result) => {
+              .signAndSend(activeAccount.address, (result) => {
                 const { status, dispatchError, txHash } = result;
                 console.log(status);
 

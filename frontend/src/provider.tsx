@@ -249,9 +249,9 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   }
 
   // Keep active signer up to date
-  // useEffect(() => {
-  //   api?.setSigner(activeSigner.current as Signer)
-  // }, [api, activeSigner.current])
+  useEffect(() => {
+    api?.setSigner(activeSigner.current as Signer)
+  }, [api, activeSigner.current])
 
   // Disconnect
   const disconnect = async (disconnectApi?: boolean) => {
