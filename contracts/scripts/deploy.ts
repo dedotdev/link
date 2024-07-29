@@ -1,7 +1,7 @@
-import { getDeploymentData } from '@/utils/getDeploymentData';
-import { initPolkadotJs } from '@/utils/initPolkadotJs';
-import { writeContractAddresses } from '@/utils/writeContractAddresses';
-import { deployContract } from '@scio-labs/use-inkathon/helpers';
+import { getDeploymentData } from "@/utils/getDeploymentData"
+import { initDedot } from "@/utils/initDedot"
+import { writeContractAddresses } from "@/utils/writeContractAddresses"
+import { deployContract } from "@/utils/deployContract"
 
 /**
  * Script that deploys the greeter contract and writes its address to a file.
@@ -15,12 +15,12 @@ import { deployContract } from '@scio-labs/use-inkathon/helpers';
  *  - `CHAIN=alephzero-testnet pnpm run deploy`
  */
 const main = async () => {
-  const initParams = await initPolkadotJs();
+  const initParams = await initDedot();
   const { api, chain, account } = initParams;
 
   // Deploy greeter contract
   const { abi, wasm } = await getDeploymentData('link');
-  const contract = await deployContract(api, account, abi, wasm, 'new', []);
+  const contract = await deployContract(api, account, abi, wasm);
 
   // Write contract addresses to `{contract}/{network}.ts` file(s)
   await writeContractAddresses(chain.network, {

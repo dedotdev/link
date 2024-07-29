@@ -1,10 +1,9 @@
-import { ApiPromise, Keyring } from '@polkadot/api';
-import { IKeyringPair } from '@polkadot/types/types/interfaces';
-import { BN } from '@polkadot/util';
-import { getSubstrateChain } from '@scio-labs/use-inkathon/chains';
-import { getBalance, initPolkadotJs as initApi } from '@scio-labs/use-inkathon/helpers';
-import { SubstrateChain, SubstrateExplorer } from '@scio-labs/use-inkathon/types';
-import * as dotenv from 'dotenv';
+import { Keyring } from "@polkadot/api"
+import { IKeyringPair } from "@polkadot/types/types/interfaces"
+import { getSubstrateChain } from "@scio-labs/use-inkathon/chains"
+import { SubstrateChain, SubstrateExplorer } from "@scio-labs/use-inkathon/types"
+import * as dotenv from "dotenv"
+import { LegacyClient, WsProvider } from "dedot"
 
 // Dynamically load environment from `.env.{chainId}`
 const chainId = process.env.CHAIN || 'development';
@@ -15,14 +14,14 @@ dotenv.config({ path: `.env.${chainId}` });
  */
 export type InitParams = {
   chain: SubstrateChain;
-  api: ApiPromise;
+  api: LegacyClient;
   keyring: Keyring;
   account: IKeyringPair;
   decimals: number;
   prefix: number;
-  toBNWithDecimals: (_: number | string) => BN;
 };
-export const initPolkadotJs = async (): Promise<InitParams> => {
+
+export const initDedot = async (): Promise<InitParams> => {
   const accountUri = process.env.ACCOUNT_URI || '//Alice';
   let chain: SubstrateChain | undefined = undefined;
   if (chainId === 'pop-network') {
@@ -44,23 +43,28 @@ export const initPolkadotJs = async (): Promise<InitParams> => {
   if (!chain) throw new Error(`Chain '${chainId}' not found`);
 
   // Initialize api
-  const { api } = await initApi(chain, { noInitWarn: true });
+  const api = await LegacyClient.new(new WsProvider(chain.rpcUrls[0] as string));
 
   // Print chain info
-  const network = (await api.rpc.system.chain())?.toString() || '';
-  const version = (await api.rpc.system.version())?.toString() || '';
+  const network = await api.rpc.system_chain() || '';
+  const version = await api.rpc.system_version() || '';
   console.log(`Initialized API on ${network} (${version})`);
 
   // Get decimals & prefix
-  const decimals = api.registry.chainDecimals?.[0] || 12;
-  const prefix = api.registry.chainSS58 || 42;
-  const toBNWithDecimals = (n: number | string) => new BN(n).mul(new BN(10).pow(new BN(decimals)));
+  const props = await api.rpc.system_properties();
+  const decimals = typeof props.tokenDecimals === 'number' ? props.tokenDecimals : Array.isArray(props.tokenDecimals) ? props.tokenDecimals[0] : 12;
+  const prefix = api.consts.system.ss58Prefix;
 
   // Initialize account & set signer
   const keyring = new Keyring({ type: 'sr25519' });
   const account = keyring.addFromUri(accountUri);
-  const balance = await getBalance(api, account.address);
-  console.log(`Initialized Account: ${account.address} (${balance.balanceFormatted})\n`);
+  const balance = await api.query.system.account(account.address);
+  const balanceFormatted = formatBalance(balance.data.free, decimals);
+  console.log(`Initialized Account: ${account.address} (${balanceFormatted})\n`);
 
-  return { api, chain, keyring, account, decimals, prefix, toBNWithDecimals };
+  return { api, chain, keyring, account, decimals, prefix };
+};
+
+export const formatBalance = (balance: bigint, decimal: number = 12): string => {
+  return (parseFloat(balance.toString()) / Math.pow(10, decimal)).toString();
 };
