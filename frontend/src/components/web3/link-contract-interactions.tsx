@@ -17,9 +17,10 @@ import { cn } from "../../utils/cn"
 import { useInkathon } from "@/provider.tsx"
 import useLinkContract from "@/hooks/useLinkContract.ts"
 import { stringToHex } from "dedot/utils"
-import type { LinkSlugCreationMode } from "@/contracts/link/types"
 import { ContractTxResult, contractTxWithToast } from "@/utils/contract-tx-with-toast.tsx"
 import { DispatchError } from 'dedot/codecs';
+import { isContractDispatchError, isContractLangError } from 'dedot/contracts';
+import { LinkSlugCreationMode } from "contracts/deployments/types/link/types"
 
 const slugParser = z
   .string()
@@ -64,28 +65,30 @@ export const LinkContractInteractions: FC = () => {
   }
 
   const dryRun = async (mode: LinkSlugCreationMode, url: string) => {
-    const result = await contract!.query.shorten(
-      mode, url,
-      { caller: activeAccount!.address }
-    );
+    try {
+      const result = await contract!.query.shorten(
+        mode, url,
+        { caller: activeAccount!.address }
+      );
 
-    console.log('dry-run', result);
+      console.log('dry-run', result);
 
-    if (!result.isOk) {
-      throw new Error(getDispatchErrorMessage(result.err));
-    }
+      return {
+        result: result.data,
+        raw: result.raw
+      }
+    } catch (error: any) {
+      console.error(error);
 
-    if (result.data.isErr) {
-      throw new Error(`ERROR: ${JSON.stringify(result.data.err)}`);
-    }
+      if (isContractDispatchError(error)) {
+        throw new Error(getDispatchErrorMessage(error.dispatchError));
+      }
 
-    if (result.data.value.isErr) {
-      throw new Error(`ERROR: ${result.data.value.err}`);
-    }
+      if (isContractLangError(error)) {
+        throw new Error(`ERROR: ${JSON.stringify(error.langError)}`);
+      }
 
-    return {
-      result: result.data.value.value,
-      raw: result.raw
+      throw new Error(`ERROR: ${error.message}`);
     }
   }
 
@@ -116,7 +119,7 @@ export const LinkContractInteractions: FC = () => {
 
                 if (status.type === 'BestChainBlockIncluded' || status.type === 'Finalized') {
                   if (dispatchError) {
-                    reject(getDispatchErrorMessage(dispatchError));
+                    reject({ errorMessage: getDispatchErrorMessage(dispatchError) });
                   } else {
                     resolve({
                       extrinsicHash: txHash,
@@ -124,7 +127,7 @@ export const LinkContractInteractions: FC = () => {
                     });
                   }
                 } else if (status.type === 'Invalid' || status.type === 'Drop') {
-                  reject(`Tx ${status.type}`);
+                  reject({ errorMessage: status.type });
                 }
               })
           })

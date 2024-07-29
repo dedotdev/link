@@ -3,6 +3,7 @@
 import type { VersionedGenericSubstrateApi, RpcVersion, RpcV2 } from 'dedot/types';
 import type { GenericContractApi } from 'dedot/contracts';
 import type { SubstrateApi } from 'dedot/chaintypes';
+import type { InkPrimitivesLangError } from './types';
 import { ContractQuery } from './query';
 import { ContractTx } from './tx';
 import { ConstructorQuery } from './constructor-query';
@@ -18,4 +19,9 @@ export interface LinkContractApi<
   constructorQuery: ConstructorQuery<ChainApi[Rv]>;
   constructorTx: ConstructorTx<ChainApi[Rv]>;
   events: ContractEvents<ChainApi[Rv]>;
+
+  types: {
+    LangError: InkPrimitivesLangError;
+    ChainApi: ChainApi[Rv];
+  };
 }

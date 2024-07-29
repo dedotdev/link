@@ -27,12 +27,7 @@ export interface ContractQuery<ChainApi extends GenericSubstrateApi> extends Gen
       slug: LinkSlugCreationMode,
       url: BytesLike,
       options: ContractCallOptions,
-    ) => Promise<
-      GenericContractCallResult<
-        Result<Result<LinkShorteningOutcome, LinkError>, InkPrimitivesLangError>,
-        ContractCallResult<ChainApi>
-      >
-    >
+    ) => Promise<GenericContractCallResult<Result<LinkShorteningOutcome, LinkError>, ContractCallResult<ChainApi>>>
   >;
 
   /**
@@ -48,9 +43,7 @@ export interface ContractQuery<ChainApi extends GenericSubstrateApi> extends Gen
     (
       slug: BytesLike,
       options: ContractCallOptions,
-    ) => Promise<
-      GenericContractCallResult<Result<Bytes | undefined, InkPrimitivesLangError>, ContractCallResult<ChainApi>>
-    >
+    ) => Promise<GenericContractCallResult<Bytes | undefined, ContractCallResult<ChainApi>>>
   >;
 
   /**
@@ -70,8 +63,6 @@ export interface ContractQuery<ChainApi extends GenericSubstrateApi> extends Gen
     (
       codeHash: Hash,
       options: ContractCallOptions,
-    ) => Promise<
-      GenericContractCallResult<Result<Result<[], LinkError>, InkPrimitivesLangError>, ContractCallResult<ChainApi>>
-    >
+    ) => Promise<GenericContractCallResult<Result<[], LinkError>, ContractCallResult<ChainApi>>>
   >;
 }

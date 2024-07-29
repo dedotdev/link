@@ -1,5 +1,5 @@
 import { Contract } from "dedot/contracts"
-import { LinkContractApi } from "@/contracts/link"
+import { LinkContractApi } from "contracts/deployments/types/link"
 import { useInkathon } from "@/provider.tsx"
 import { useEffect, useState } from "react"
 

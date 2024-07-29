@@ -23,12 +23,12 @@ export const Resolve: React.FC<{ slug: string }> = ({ slug }) => {
     if (!contract) return;
 
     (async () => {
-      const caller = activeAccount?.address || DEFAULT_CALLER;
-      const result = await contract.query.resolve(slug, { caller });
+      try {
+        const caller = activeAccount?.address || DEFAULT_CALLER;
+        const result = await contract.query.resolve(slug, { caller });
 
-      if (result.isOk && result.data.isOk) {
-        if (result.data.value) {
-          const location = hexToString(result.data.value);
+        if (result.data) {
+          const location = hexToString(result.data);
           console.log('Resolved Location', location);
 
           if (mounted + DELAY < Date.now()) {
@@ -47,8 +47,8 @@ export const Resolve: React.FC<{ slug: string }> = ({ slug }) => {
             window.location.href = `/?slug=${slug}`;
           }, 2_000);
         }
-      } else {
-        console.error(result);
+      } catch (e: any) {
+        console.error(e);
         toast.error("Unable to resolve link")
       }
     })();

@@ -39,6 +39,7 @@
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "tsx": "^4.7.2",
-    "typescript": "^5.4.4"
+    "typescript": "^5.4.4",
+    "dedot": "^0.2.0"
   }
 }
