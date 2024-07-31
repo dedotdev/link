@@ -11,11 +11,11 @@ This is a port of https://tiny.ink using [Dedot](https://dedot.dev) to show-case
 
 The dapp is live at: https://link.dedot.dev.
 
-The contract is deployed on [POP Network](https://popnetwork.xyz/) ([address](https://github.com/dedotdev/link/blob/e349ee062040cdcbb7a04f1172fb92ffae9cc0f1/contracts/deployments/link/pop-network.ts))
+The contract is deployed on [POP Network](https://popnetwork.xyz/) ([address](https://github.com/dedotdev/link/blob/master/contracts/deployments/link/pop-network.ts))
 
 ### Development
 
-1. Generate Types & APIs for the link contract using dedot cli
+1. Generate [Types & APIs](https://github.com/dedotdev/link/tree/master/contracts/deployments/types/link) for the link contract using dedot cli
 
 ```shell
 pnpm typink
