@@ -11,8 +11,12 @@ export const Footer = () => {
           <a href="https://use.ink/" target="_blank" rel="noreferrer">
             <img src={Logo} alt="Squid" className="h-5" />
           </a>
+          &times;
+          <a href="https://dedot.dev/">
+            <div> Dedot.</div>
+          </a>
           <a href="https://popnetwork.xyz/">
-            <div>& deployed on POP Network</div>
+            <div>Deployed on POP Network!</div>
           </a>
         </div>
       </div>
@@ -28,7 +32,7 @@ export const Footer = () => {
         </a>
 
         <a
-          href={"https://github.com/use-ink/link"}
+          href={"https://github.com/dedotdev/link"}
           target="_blank"
           rel="noreferrer"
           className="flex items-center justify-center gap-1 text-center text-sm text-gray-600 hover:text-gray-800"

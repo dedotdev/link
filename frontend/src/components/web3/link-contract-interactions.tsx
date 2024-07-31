@@ -4,23 +4,9 @@ import Left from "@/assets/left.svg"
 import Logo from "@/assets/logo.svg"
 import Right from "@/assets/right.svg"
 import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { ContractIds } from "@/deployments/deployments"
 import { zodResolver } from "@hookform/resolvers/zod"
-import {
-  contractQuery,
-  decodeOutput,
-  useInkathon,
-  useRegisteredContract,
-} from "@scio-labs/use-inkathon"
 import { Copy } from "lucide-react"
 import { customAlphabet } from "nanoid"
 import { FC, useCallback, useMemo } from "react"
@@ -28,7 +14,13 @@ import { SubmitHandler, useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 import { z } from "zod"
 import { cn } from "../../utils/cn"
-import { contractTxWithToast } from "../../utils/contract-tx-with-toast"
+import { useInkathon } from "@/provider.tsx"
+import useLinkContract from "@/hooks/useLinkContract.ts"
+import { assert, stringToHex } from "dedot/utils"
+import { ContractTxResult, contractTxWithToast } from "@/utils/contract-tx-with-toast.tsx"
+import { DispatchError } from 'dedot/codecs';
+import { isContractDispatchError, isContractLangError } from 'dedot/contracts';
+import { LinkSlugCreationMode } from "contracts/deployments/types/link/types"
 
 const slugParser = z
   .string()
@@ -41,11 +33,11 @@ const slugParser = z
 const formSchema = z.object({
   url: z.string().url(),
   slug: slugParser,
-})
+});
 
 export const LinkContractInteractions: FC = () => {
-  const { api, activeAccount, connect, isConnected } = useInkathon()
-  const { contract } = useRegisteredContract(ContractIds.Link)
+  const { api, activeAccount, connect, isConnected, activeChain } = useInkathon()
+  const { contract } = useLinkContract()
 
   const initialSlug = useMemo(
     () => customAlphabet("abcdefghijklmnopqrstuvwxyz", 5)(),
@@ -56,67 +48,105 @@ export const LinkContractInteractions: FC = () => {
     resolver: zodResolver(formSchema),
     mode: "onBlur",
     defaultValues: {
+      url: '',
       slug: initialSlug,
     },
-  })
+  });
 
-  const dryRun = useCallback(
-    async ({ slug, url }: { slug: string; url: string }) => {
-      if (!contract || !api || !slug || !url || !activeAccount) return
+  const getDispatchErrorMessage = (dispatchError: DispatchError) => {
+    const errorMeta = api!.registry.findErrorMeta(dispatchError);
 
-      const shortenOutcome = await contractQuery(
-        api,
-        activeAccount?.address,
-        contract,
-        "shorten",
-        undefined,
-        [{ New: slug }, url],
-      )
-      const shortenResult = decodeOutput(shortenOutcome, contract, "shorten")
+    if (errorMeta) {
+      const { pallet, name, docs } = errorMeta;
+      return `${pallet}::${name} - ${docs.join('')}`
+    } else {
+      return `${JSON.stringify(dispatchError)}`; // other errors
+    }
+  }
 
-      if (shortenOutcome.result.isErr && shortenOutcome.result.asErr.isModule) {
-        const { docs, method, section } = api.registry.findMetaError(
-          shortenOutcome.result.asErr.asModule,
-        )
+  const dryRun = async (mode: LinkSlugCreationMode, url: string) => {
+    try {
+      const { data, raw } = await contract!.query.shorten(
+        mode, url,
+        { caller: activeAccount!.address }
+      );
 
-        shortenResult.decodedOutput = `${section}.${method}: ${docs.join(" ")}`
+      console.log('dry-run result', data, raw);
+
+      // handle the case shortening return a result with LinkError
+      if (data.isErr) {
+        throw new Error(data.err);
       }
 
-      return shortenResult
-    },
-    [contract, api, activeAccount],
-  )
+      return {
+        result: data,
+        raw
+      }
+    } catch (error: any) {
+      console.error(error);
+
+      if (isContractDispatchError(error)) {
+        throw new Error(getDispatchErrorMessage(error.dispatchError));
+      }
+
+      if (isContractLangError(error)) {
+        throw new Error(error.langError);
+      }
+
+      throw new Error(error.message);
+    }
+  }
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = useCallback(
     async ({ slug, url }) => {
-      if (!api) {
-        throw new Error("Api not available")
-      }
-      if (!contract) {
-        throw new Error("Contract not available")
-      }
-      if (!activeAccount) {
-        throw new Error("Signer not available")
-      }
+      try {
+        assert(api, "Api not available");
+        assert(contract, "Contract not available");
+        assert(activeAccount, "Signer not available");
 
-      const outcome = await dryRun({ slug, url })
-      if (outcome?.isError) {
-        console.error({ outcome })
-        toast.error(outcome.decodedOutput)
-        return
-      }
+        // Dry run
+        const linkMode: LinkSlugCreationMode = { type: 'New', value: stringToHex(slug) };
 
-      return contractTxWithToast(
-        api,
-        activeAccount.address,
-        contract,
-        "shorten",
-        {},
-        [{ DeduplicateOrNew: slug }, url],
-      )
+        const { raw } = await dryRun(linkMode, url);
+
+        const shortenUrl = async (): Promise<ContractTxResult> => {
+          return new Promise<ContractTxResult>((resolve, reject) => {
+            contract.tx.shorten(linkMode, url, { gasLimit: raw.gasRequired})
+              .signAndSend(activeAccount.address, (result) => {
+                const { status, dispatchError, txHash } = result;
+                console.log(status);
+
+                if (status.type === 'BestChainBlockIncluded' || status.type === 'Finalized') {
+                  if (dispatchError) {
+                    reject({ errorMessage: getDispatchErrorMessage(dispatchError) });
+                  } else {
+                    resolve({
+                      extrinsicHash: txHash,
+                      blockHash: status.value.blockHash
+                    });
+                  }
+                } else if (status.type === 'Invalid' || status.type === 'Drop') {
+                  reject({ errorMessage: status.type });
+                }
+              })
+              .catch((e) => {
+                reject({ errorMessage: e.message });
+              })
+
+          })
+        }
+
+        return contractTxWithToast(shortenUrl())
+      } catch (e: any) {
+        toast.error(e.message);
+      }
     },
-    [activeAccount, api, contract, dryRun],
+    [activeAccount, api, contract],
   )
+
+  const host = useMemo<string>(() => {
+    return activeChain?.network === 'development' ? 'http://localhost:5173' : 'https://link.dedot.dev'
+  }, [activeChain]);
 
   return (
     <div className="flex w-screen min-w-[16rem] max-w-[748px] grow flex-col px-4">
@@ -205,14 +235,14 @@ export const LinkContractInteractions: FC = () => {
 
               <div className="mb-1 flex min-h-14 w-full flex-row items-center justify-between rounded-md  bg-ink-border px-4 py-3 text-xl text-white">
                 <a
-                  href={`https://tiny.ink/${encodeURI(
+                  href={`${host}/${encodeURI(
                     form.watch("slug").toLowerCase(),
                   )}`}
                   className="underline"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  {`https://tiny.ink/${encodeURI(
+                  {`${host}/${encodeURI(
                     form.watch("slug").toLowerCase(),
                   )}`}
                 </a>

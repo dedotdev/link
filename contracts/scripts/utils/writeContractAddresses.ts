@@ -8,7 +8,7 @@ import path from 'path';
  */
 export const writeContractAddresses = async (
   networkId: string,
-  contractDeployments: Record<string, DeployedContract>,
+  contractDeployments: Record<string, Partial<DeployedContract>>,
   metadata?: { [key: string]: string | number },
 ) => {
   const baseDir = process.env.DIR || './deployments';

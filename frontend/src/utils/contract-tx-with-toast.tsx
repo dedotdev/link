@@ -1,19 +1,21 @@
 import { FC } from "react"
 
 import {
-  ContractTxResult,
   SubstrateExplorer,
-  contractTx,
-  useInkathon,
 } from "@scio-labs/use-inkathon"
 import { toast } from "react-hot-toast"
+import { useInkathon } from "@/provider.tsx"
 
-type ContractTxWithToastParams = Parameters<typeof contractTx>
+export type ContractTxResult = {
+  extrinsicHash?: string;
+  blockHash?: string;
+  errorMessage?: string;
+}
 
 export const contractTxWithToast = async (
-  ...contractTxParams: ContractTxWithToastParams
+  txPromise: Promise<ContractTxResult>
 ) => {
-  return toast.promise(contractTx(...contractTxParams), {
+  return toast.promise(txPromise, {
     loading: "Sending transaction…",
     success: (result) => <ContractTxSuccessToast {...result} />,
     error: (result) => <ContractTxErrorToast {...result} />,

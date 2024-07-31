@@ -1,11 +1,10 @@
 import { FC, useState } from "react"
 
-import { encodeAddress } from "@polkadot/util-crypto"
+import { encodeAddress } from "dedot/utils"
 import {
   SubstrateWalletPlatform,
   allSubstrateWallets,
   isWalletInstalled,
-  useInkathon,
 } from "@scio-labs/use-inkathon"
 import { AiOutlineCheckCircle, AiOutlineDisconnect } from "react-icons/ai"
 import { FiExternalLink } from "react-icons/fi"
@@ -19,6 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { truncateHash } from "@/utils/truncate-hash"
+import { useInkathon } from "@/provider.tsx"
 
 export const ConnectButton: FC = () => {
   const {
