@@ -10,6 +10,8 @@ import { ConstructorQuery } from './constructor-query';
 import { ConstructorTx } from './constructor-tx';
 import { ContractEvents } from './events';
 
+export * from './types';
+
 export interface LinkContractApi<
   Rv extends RpcVersion = RpcV2,
   ChainApi extends VersionedGenericSubstrateApi = SubstrateApi,
