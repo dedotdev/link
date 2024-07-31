@@ -16,7 +16,7 @@ import { z } from "zod"
 import { cn } from "../../utils/cn"
 import { useInkathon } from "@/provider.tsx"
 import useLinkContract from "@/hooks/useLinkContract.ts"
-import { stringToHex } from "dedot/utils"
+import { assert, stringToHex } from "dedot/utils"
 import { ContractTxResult, contractTxWithToast } from "@/utils/contract-tx-with-toast.tsx"
 import { DispatchError } from 'dedot/codecs';
 import { isContractDispatchError, isContractLangError } from 'dedot/contracts';
@@ -58,24 +58,29 @@ export const LinkContractInteractions: FC = () => {
 
     if (errorMeta) {
       const { pallet, name, docs } = errorMeta;
-      return `${pallet}:${name} - ${docs.join('')}`
+      return `${pallet}::${name} - ${docs.join('')}`
     } else {
-      return `ERROR: ${JSON.stringify(dispatchError)}`;
+      return `${JSON.stringify(dispatchError)}`; // other errors
     }
   }
 
   const dryRun = async (mode: LinkSlugCreationMode, url: string) => {
     try {
-      const result = await contract!.query.shorten(
+      const { data, raw } = await contract!.query.shorten(
         mode, url,
         { caller: activeAccount!.address }
       );
 
-      console.log('dry-run', result);
+      console.log('dry-run result', data, raw);
+
+      // handle the case shortening return a result with LinkError
+      if (data.isErr) {
+        throw new Error(data.err);
+      }
 
       return {
-        result: result.data,
-        raw: result.raw
+        result: data,
+        raw
       }
     } catch (error: any) {
       console.error(error);
@@ -85,34 +90,28 @@ export const LinkContractInteractions: FC = () => {
       }
 
       if (isContractLangError(error)) {
-        throw new Error(`ERROR: ${JSON.stringify(error.langError)}`);
+        throw new Error(error.langError);
       }
 
-      throw new Error(`ERROR: ${error.message}`);
+      throw new Error(error.message);
     }
   }
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = useCallback(
     async ({ slug, url }) => {
       try {
-        if (!api) {
-          throw new Error("Api not available")
-        }
-        if (!contract) {
-          throw new Error("Contract not available")
-        }
-        if (!activeAccount) {
-          throw new Error("Signer not available")
-        }
+        assert(api, "Api not available");
+        assert(contract, "Contract not available");
+        assert(activeAccount, "Signer not available");
 
         // Dry run
         const linkMode: LinkSlugCreationMode = { type: 'New', value: stringToHex(slug) };
 
-        const dryRunResult = await dryRun(linkMode, url);
+        const { raw } = await dryRun(linkMode, url);
 
         const shortenUrl = async (): Promise<ContractTxResult> => {
           return new Promise<ContractTxResult>((resolve, reject) => {
-            contract.tx.shorten(linkMode, url, { gasLimit: dryRunResult.raw.gasRequired})
+            contract.tx.shorten(linkMode, url, { gasLimit: raw.gasRequired})
               .signAndSend(activeAccount.address, (result) => {
                 const { status, dispatchError, txHash } = result;
                 console.log(status);
@@ -130,6 +129,10 @@ export const LinkContractInteractions: FC = () => {
                   reject({ errorMessage: status.type });
                 }
               })
+              .catch((e) => {
+                reject({ errorMessage: e.message });
+              })
+
           })
         }
 
