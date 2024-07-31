@@ -15,8 +15,8 @@ importers:
         specifier: ^2.27.1
         version: 2.27.1
       '@dedot/cli':
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: ^0.3.0
+        version: 0.3.0
       lint-staged:
         specifier: ^15.2.2
         version: 15.2.2
@@ -57,8 +57,8 @@ importers:
         specifier: ^7.6.0
         version: 7.7.1(eslint@8.57.0)(typescript@5.4.5)
       dedot:
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: ^0.3.0
+        version: 0.3.0
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
@@ -123,8 +123,8 @@ importers:
         specifier: workspace:*
         version: link:../contracts
       dedot:
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: ^0.3.0
+        version: 0.3.0
       lodash.debounce:
         specifier: ^4.0.8
         version: 4.0.8
@@ -357,8 +357,8 @@ packages:
   '@dedot/api@0.1.1':
     resolution: {integrity: sha512-9ZXooK9dcpdT9TIiPddJBbICSHIPBfW7eLOE4J6V5PKo5PolDULM8+MPku7HpyuMU41MAPseYRsIaOOXH5A+aw==}
 
-  '@dedot/api@0.2.0':
-    resolution: {integrity: sha512-psu6UZteDIqsDvK59+7J7TvY8ActSChP5vGbLhhVxoe6yH1OgA93lZU9eSvHPggYnPyIqX279vmOeyEWgGNL4g==}
+  '@dedot/api@0.3.0':
+    resolution: {integrity: sha512-GkbjUrhQjzo1YSCNCUBJv3uBXzte3elAxdU/kMg3f/kosBn5rdc3bM9Fw9RxkaU5fkzEI884yGCWxdJYV78pmw==}
 
   '@dedot/chaintypes@0.1.1':
     resolution: {integrity: sha512-EHFHozwq7xGKN0uNtaxVCKqCtd7pCFz20lvM+fIRYKuRofKhYuoxwsYmDQ4QKmbXciEWAeliylbCQVx+0QCPWA==}
@@ -367,63 +367,63 @@ packages:
     resolution: {integrity: sha512-ApusSbeGdVq0WM+KX/i480iva2Sj6Ay+P8w/HgoB0t64fSjaGrmolU+5Q1HAVOjfUExqJ9GC8lFEOykyybXD5w==}
     hasBin: true
 
-  '@dedot/cli@0.2.0':
-    resolution: {integrity: sha512-/va3vjBgB13O5Cr0Dk9awdZyrRuODtXgSMaeMz730Gw7Tvh7xFcQZkucw7nAQl5OjqTP3049YH8i65I4e9CKjA==}
+  '@dedot/cli@0.3.0':
+    resolution: {integrity: sha512-icJdOA8iH/B1rG2YdRa9NGb+bMtmVVGRmByxghHObRQrs9oQF7wGWHFoG8OlGx4Ma5GO0z++n1KX1C1jknIpjw==}
     hasBin: true
 
   '@dedot/codecs@0.1.1':
     resolution: {integrity: sha512-aDVM2iFIdU970OCvVs4vrdSjXOgXkvrG9gVxEuK1gWx2vaI/Ez/uMSdKJOpWjUZIHjoq3D9jmO016VB8ZrH2lQ==}
 
-  '@dedot/codecs@0.2.0':
-    resolution: {integrity: sha512-NOYFZ6zMT5uYax267IbtXijnwIzfvJbM9qRr4mW/axX1a7NrB3hjwVoFG1jo+OD5V1OgRrfZrAnouEnrp4ijRg==}
+  '@dedot/codecs@0.3.0':
+    resolution: {integrity: sha512-ojfw8ufYdIzljDHcGcLxB2Ur02J3yjqI2RwGxUNcdF8xHdpub/iqFddZBILuo7va1CBUfWvdlaB1xXMYJFvyXQ==}
 
   '@dedot/codegen@0.1.1':
     resolution: {integrity: sha512-VvE6KG1kaO6s+xUF6QBbQFvdJulDQSL6f7fTjqbjV0njxoi55hzN2+uuvFXkdofQnJM86FlAv4CY6cvSO4nqfg==}
 
-  '@dedot/codegen@0.2.0':
-    resolution: {integrity: sha512-ZswyfGLml4FcBR3tCFYdJBfTXDErZIxFsD0H1dVX6oI/MBokq2B+Ex8ja8bs/uYEdt+i4PbOO2InqukhXSq2wQ==}
+  '@dedot/codegen@0.3.0':
+    resolution: {integrity: sha512-ycoN9/IaOJNl4bc8+gDxVt5IjLXoNjawChVkpUbNjpkWvuhTb9zO0b/lRJjcVVEqGws8FpV0CwsExYJygw3cfg==}
 
   '@dedot/contracts@0.1.1':
     resolution: {integrity: sha512-JbzE6pGd1Tw2H5G1GDmE5W+w38+Uo3OVR6rOXrxjL9zgJAmhWKUHh84UBJ+fizQOml5vHv011VxMABeT1pTUnQ==}
 
-  '@dedot/contracts@0.2.0':
-    resolution: {integrity: sha512-OcZFJd2R6G7KKgfquRamTkY9p0OhmScuQvdZwMC0oCGZKeJ9owp5EcE0/0VnxBfdpTrwn6qlW8Uj3O5V3ilg0g==}
+  '@dedot/contracts@0.3.0':
+    resolution: {integrity: sha512-lMto5JPqLIECGnz2gt5yzLGkszgSSzWOmGBujjUJlSzM1c0sFm4E8fTfOevV1oZD4PKCiU/mbpoCLl1Zt4vNjQ==}
 
   '@dedot/providers@0.1.1':
     resolution: {integrity: sha512-6Fx9xD8fgQH/90lNywezbExLt9dnsec/6vr4fr2aSmI4hBT1jF+hAC89EXSDuVXmahSGca9J21Y27BRlUsUDKw==}
 
-  '@dedot/providers@0.2.0':
-    resolution: {integrity: sha512-CHqVLDeH++3jMb+Iyp4F8z7URXJc0IK9N1wrkt8AR9frm3B85RFwcD4Npl8dCC4A1ZvyKqOqCPyUn/ChezV1Hg==}
+  '@dedot/providers@0.3.0':
+    resolution: {integrity: sha512-KGsaprjIaEddrsTVNCljqJlQVx0Nk3lqtZYgSU3vROIaLhfq/4FRd3b2b04glb0hBTU48Tn20E0tBxQffrLVaQ==}
 
   '@dedot/runtime-specs@0.1.1':
     resolution: {integrity: sha512-Da7CAiyu71HJld3X8GHS91QY+fQyof6BP62a9nVu5mPqCMh+1FXIvYt63H0JDEaS2F7ji8weRfJkCrGPXJ6q3w==}
 
-  '@dedot/runtime-specs@0.2.0':
-    resolution: {integrity: sha512-M6jjpx36ldUokdMgGT+p6+hVJ7HP8aCjkq163dPsVA12W+htDC7WhmwM1s+70ohS/aS+KN6dzoEjcquJAGFwKw==}
+  '@dedot/runtime-specs@0.3.0':
+    resolution: {integrity: sha512-2bsyxawZNYEmUAedy2H7sAJL2/K0+OtPf/4QzZEWX8sJNjdjUC27q89DlhzXDiiHAdawopioWOb+tW4qVt2LqA==}
 
   '@dedot/shape@0.1.1':
     resolution: {integrity: sha512-pCWPH7MX9IHKJuJgpbOagcHHZcB/y1fl6RcPiFumiSpxGZCmX+nnjYlq+VcsFxFHJgqIP6kzqJknHQdeI7VwNQ==}
 
-  '@dedot/shape@0.2.0':
-    resolution: {integrity: sha512-WVA6DbOJ6RCHkNVtPXbiMnFvQUbrKOpANBSocIFrIh7e+73mSVS7gZGRIkLBFgOUtebexpn2WU3D73Hi6FnVOw==}
+  '@dedot/shape@0.3.0':
+    resolution: {integrity: sha512-R2uTFeZuinFO7COkRpeDo3eHsKp63tUHpUSgW2y+9QL5sTHYlHyZmg+tb+kSbbVJOWK8dQTMroPRAtaBED7bFw==}
 
   '@dedot/storage@0.1.1':
     resolution: {integrity: sha512-pG5sIfSG8etHESzhiGTuZqO+6UrwwlNR6JMQaMPkYYDHlBCAkK8e2tV/p6hEbBciJhhteSE4UA9O3BYckM9POA==}
 
-  '@dedot/storage@0.2.0':
-    resolution: {integrity: sha512-2xgdSH19LlaB7IFKA29k0AZVSTRFjLh+MAFt1oXdF1gGxPD4qdX6PiVACoKCq5WwUzG0TyN71gdnZ9RZIxSeJg==}
+  '@dedot/storage@0.3.0':
+    resolution: {integrity: sha512-MbkXcJ7O7hekX4YxeRR8jcrKpuBgxlKSxNi8LL2zcpULZNW2W7+IgHfQvcZd6B7aSS9+B1sgnZ6Um9wVWGdYHw==}
 
   '@dedot/types@0.1.1':
     resolution: {integrity: sha512-7QseAT2vMIs9HX7whzqaiCkGPQfUCRlIfdUiOki1s4s+ffRRArHW6ax5RNugAwji5KBhVpCDq+ajLdgMwgimUw==}
 
-  '@dedot/types@0.2.0':
-    resolution: {integrity: sha512-gHJt2JLqubpVpDFR3ltzlc2KmwFp7o/yGenwpTowYFQUy0p1Vpo3T+3/O4aYuUenNLii/zLWbFSnbFyWXpXq7Q==}
+  '@dedot/types@0.3.0':
+    resolution: {integrity: sha512-ucR8Tf9ffAjVtaLCK6dyywCHRQ2YTE7jMxJLRp8sMCsnyEV6Xju91uF3Bxg+SEfSKE9agv2Cdxibcc4QIvXGpQ==}
 
   '@dedot/utils@0.1.1':
     resolution: {integrity: sha512-fv0cgegihj/amPJ2ws8saNROv+oIlC/OV7QAY82LZM0mvpKaq2Svyk81VZ0obH1kYqe+LBFSvYJEqJw2TgPDgQ==}
 
-  '@dedot/utils@0.2.0':
-    resolution: {integrity: sha512-LhkCdNxouNGF5J58F/KTXhEmWaw9Y1rgVkcUqDrqKocDXRkQFjAgecuo+dMuwgwFbb6zMqMrZQwUQwHcjDxxMA==}
+  '@dedot/utils@0.3.0':
+    resolution: {integrity: sha512-c8aT+XX+kQrl5g5L8wsvphI7PsV4nrHXh/TI0oVmHveR9SqkFRBpbILHMuQuDOd7G5ZJHl0wjDNdp2eHsfa4sA==}
 
   '@esbuild/aix-ppc64@0.19.12':
     resolution: {integrity: sha512-bmoCYyWdEL3wDQIVbcyzRyeKLgk2WtWLTWz1ZIAZF/EGbNOwSA6ew3PftJ1PqMiOOGu0OyFMzG53L0zqIpPeNA==}
@@ -1104,6 +1104,10 @@ packages:
 
   '@polkadot/types-support@12.2.2':
     resolution: {integrity: sha512-LNOZTkbp458/abLGGpoEaiCttzQz2tznxDVxBrb6nPsXcvLZP/hHwXJnRvYgJl5zdcUvHFC0V641plMc3qwrFA==}
+    engines: {node: '>=18'}
+
+  '@polkadot/types-support@12.2.3':
+    resolution: {integrity: sha512-/YVZ0j126el/5e/BTrhw1SuDmlyV394zKak7LkYcAJ8IyDmT53cajMK2TQe03uVsE/vveligkYmJ24IEjZ+DRg==}
     engines: {node: '>=18'}
 
   '@polkadot/types@10.10.1':
@@ -2415,8 +2419,8 @@ packages:
     resolution: {integrity: sha512-mbvwe5GlRpcVlNaqHtPbVE0ZXI6IZ+7HQBWM5Pz+mf+VFh2n/FExQ8BTXzFTa4YO2slG0+qgzoiRwothtOvlUQ==}
     hasBin: true
 
-  dedot@0.2.0:
-    resolution: {integrity: sha512-fWvKwUarsns1oIgRGEfcaNg23VLNxaJU9e8uEpeykC0cYBVJIMr1jnyazZfXxEfJlK8EM9p2QpjkAvaloVX0Bw==}
+  dedot@0.3.0:
+    resolution: {integrity: sha512-vcTA/1U5GrEszQfyTBLO8eldSXcqd8osgvUGSnh8U6Db2spr1ePWg9cnJvHYE+GkSk1aI4mQkGVN7VqPwQLEbA==}
     hasBin: true
 
   deep-is@0.1.4:
@@ -4749,15 +4753,15 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@dedot/api@0.2.0':
+  '@dedot/api@0.3.0':
     dependencies:
-      '@dedot/codecs': 0.2.0
-      '@dedot/providers': 0.2.0
-      '@dedot/runtime-specs': 0.2.0
-      '@dedot/shape': 0.2.0
-      '@dedot/storage': 0.2.0
-      '@dedot/types': 0.2.0
-      '@dedot/utils': 0.2.0
+      '@dedot/codecs': 0.3.0
+      '@dedot/providers': 0.3.0
+      '@dedot/runtime-specs': 0.3.0
+      '@dedot/shape': 0.3.0
+      '@dedot/storage': 0.3.0
+      '@dedot/types': 0.3.0
+      '@dedot/utils': 0.3.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -4780,12 +4784,12 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@dedot/cli@0.2.0':
+  '@dedot/cli@0.3.0':
     dependencies:
-      '@dedot/api': 0.2.0
-      '@dedot/codecs': 0.2.0
-      '@dedot/codegen': 0.2.0
-      '@polkadot/types-support': 12.2.2
+      '@dedot/api': 0.3.0
+      '@dedot/codecs': 0.3.0
+      '@dedot/codegen': 0.3.0
+      '@polkadot/types-support': 12.2.3
       yargs: 17.7.2
     transitivePeerDependencies:
       - bufferutil
@@ -4796,10 +4800,10 @@ snapshots:
       '@dedot/shape': 0.1.1
       '@dedot/utils': 0.1.1
 
-  '@dedot/codecs@0.2.0':
+  '@dedot/codecs@0.3.0':
     dependencies:
-      '@dedot/shape': 0.2.0
-      '@dedot/utils': 0.2.0
+      '@dedot/shape': 0.3.0
+      '@dedot/utils': 0.3.0
 
   '@dedot/codegen@0.1.1':
     dependencies:
@@ -4817,16 +4821,16 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@dedot/codegen@0.2.0':
+  '@dedot/codegen@0.3.0':
     dependencies:
-      '@dedot/api': 0.2.0
-      '@dedot/codecs': 0.2.0
-      '@dedot/contracts': 0.2.0
-      '@dedot/providers': 0.2.0
-      '@dedot/runtime-specs': 0.2.0
-      '@dedot/shape': 0.2.0
-      '@dedot/types': 0.2.0
-      '@dedot/utils': 0.2.0
+      '@dedot/api': 0.3.0
+      '@dedot/codecs': 0.3.0
+      '@dedot/contracts': 0.3.0
+      '@dedot/providers': 0.3.0
+      '@dedot/runtime-specs': 0.3.0
+      '@dedot/shape': 0.3.0
+      '@dedot/types': 0.3.0
+      '@dedot/utils': 0.3.0
       handlebars: 4.7.8
       prettier: 3.3.3
     transitivePeerDependencies:
@@ -4843,12 +4847,12 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@dedot/contracts@0.2.0':
+  '@dedot/contracts@0.3.0':
     dependencies:
-      '@dedot/api': 0.2.0
-      '@dedot/codecs': 0.2.0
-      '@dedot/types': 0.2.0
-      '@dedot/utils': 0.2.0
+      '@dedot/api': 0.3.0
+      '@dedot/codecs': 0.3.0
+      '@dedot/types': 0.3.0
+      '@dedot/utils': 0.3.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -4861,9 +4865,9 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@dedot/providers@0.2.0':
+  '@dedot/providers@0.3.0':
     dependencies:
-      '@dedot/utils': 0.2.0
+      '@dedot/utils': 0.3.0
       '@polkadot/x-ws': 13.0.2
     transitivePeerDependencies:
       - bufferutil
@@ -4875,25 +4879,25 @@ snapshots:
       '@dedot/shape': 0.1.1
       '@dedot/types': 0.1.1
 
-  '@dedot/runtime-specs@0.2.0':
+  '@dedot/runtime-specs@0.3.0':
     dependencies:
-      '@dedot/codecs': 0.2.0
-      '@dedot/shape': 0.2.0
-      '@dedot/types': 0.2.0
+      '@dedot/codecs': 0.3.0
+      '@dedot/shape': 0.3.0
+      '@dedot/types': 0.3.0
 
   '@dedot/shape@0.1.1':
     dependencies:
       '@dedot/utils': 0.1.1
       deshape: 0.0.1
 
-  '@dedot/shape@0.2.0':
+  '@dedot/shape@0.3.0':
     dependencies:
-      '@dedot/utils': 0.2.0
+      '@dedot/utils': 0.3.0
       deshape: 0.0.1
 
   '@dedot/storage@0.1.1': {}
 
-  '@dedot/storage@0.2.0': {}
+  '@dedot/storage@0.3.0': {}
 
   '@dedot/types@0.1.1':
     dependencies:
@@ -4901,11 +4905,11 @@ snapshots:
       '@dedot/shape': 0.1.1
       '@dedot/utils': 0.1.1
 
-  '@dedot/types@0.2.0':
+  '@dedot/types@0.3.0':
     dependencies:
-      '@dedot/codecs': 0.2.0
-      '@dedot/shape': 0.2.0
-      '@dedot/utils': 0.2.0
+      '@dedot/codecs': 0.3.0
+      '@dedot/shape': 0.3.0
+      '@dedot/utils': 0.3.0
 
   '@dedot/utils@0.1.1':
     dependencies:
@@ -4913,7 +4917,7 @@ snapshots:
       '@scure/base': 1.1.7
       eventemitter3: 5.0.1
 
-  '@dedot/utils@0.2.0':
+  '@dedot/utils@0.3.0':
     dependencies:
       '@noble/hashes': 1.4.0
       '@scure/base': 1.1.7
@@ -5940,6 +5944,11 @@ snapshots:
       tslib: 2.6.2
 
   '@polkadot/types-support@12.2.2':
+    dependencies:
+      '@polkadot/util': 13.0.2
+      tslib: 2.6.2
+
+  '@polkadot/types-support@12.2.3':
     dependencies:
       '@polkadot/util': 13.0.2
       tslib: 2.6.2
@@ -7525,17 +7534,17 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  dedot@0.2.0:
+  dedot@0.3.0:
     dependencies:
-      '@dedot/api': 0.2.0
-      '@dedot/cli': 0.2.0
-      '@dedot/codecs': 0.2.0
-      '@dedot/contracts': 0.2.0
-      '@dedot/providers': 0.2.0
-      '@dedot/runtime-specs': 0.2.0
-      '@dedot/shape': 0.2.0
-      '@dedot/types': 0.2.0
-      '@dedot/utils': 0.2.0
+      '@dedot/api': 0.3.0
+      '@dedot/cli': 0.3.0
+      '@dedot/codecs': 0.3.0
+      '@dedot/contracts': 0.3.0
+      '@dedot/providers': 0.3.0
+      '@dedot/runtime-specs': 0.3.0
+      '@dedot/shape': 0.3.0
+      '@dedot/types': 0.3.0
+      '@dedot/utils': 0.3.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate

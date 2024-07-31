@@ -26,7 +26,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "contracts": "workspace:*",
-    "dedot": "^0.2.0",
+    "dedot": "^0.3.0",
     "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.377.0",
     "nanoid": "^5.0.7",
