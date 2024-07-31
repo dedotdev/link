@@ -16,19 +16,14 @@ export const deployLinkContract = async (api: LegacyClient, account: IKeyringPai
           if (dispatchError) {
             reject(new Error(`Deployment failed: ${JSON.stringify(dispatchError)}`));
           } else {
-            const instantiatedEvent = events
-              .map(({ event }) => event)
-              .find(api.events.contracts.Instantiated.is);
+            const instantiatedEvent = api.events.contracts.Instantiated.find(events);
 
             assert(instantiatedEvent, 'Event Contracts.Instantiated should be available');
-
-            const block = await api.rpc.chain_getBlock(status.value.blockHash);
-            const blockNumber = block.block.header.number;
 
             resolve({
               address: instantiatedEvent.palletEvent.data.contract.address(),
               hash: abi.source.hash,
-              blockNumber
+              blockNumber: status.value.blockNumber,
             })
           }
         } else if (status.type === 'Invalid' || status.type === 'Drop') {
