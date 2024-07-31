@@ -1,11 +1,11 @@
 <img src="./.images/header.png" />
 
-# link! ‒ The Unstoppable URL Shortener<br/> [![built-with-ink][i1]]
+# link! ‒ The Unstoppable URL Shortener<br/> ![built-with-ink][i1]
 
 [i1]: /.images/badge_flat.svg
 
 
-## Overview
+### Overview
 
 This is a port of https://tiny.ink using [Dedot](https://dedot.dev) to show-case how dapps can interact with ink! smart contracts with type-safe APIs from Dedot.
 
@@ -13,7 +13,7 @@ The dapp is live at: https://link.dedot.dev.
 
 The contract is deployed on [POP Network](https://popnetwork.xyz/) ([address](https://github.com/dedotdev/link/blob/e349ee062040cdcbb7a04f1172fb92ffae9cc0f1/contracts/deployments/link/pop-network.ts))
 
-## Development
+### Development
 
 1. Generate Types & APIs for the link contract using dedot cli
 
