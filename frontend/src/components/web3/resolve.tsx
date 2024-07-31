@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import Lottie from "react-lottie"
 import animationData from "../../assets/resolve.json"
 import { Footer } from "./footer"
@@ -9,11 +9,12 @@ import useLinkContract from "@/hooks/useLinkContract.ts"
 
 const DELAY = 6000
 
-const DEFAULT_CALLER = '5EeG3x2qiUMU8LkRz4WGyy9kFhLY3u1AQwZz9aidvis58jqj';
+const DEFAULT_CALLER = "5EeG3x2qiUMU8LkRz4WGyy9kFhLY3u1AQwZz9aidvis58jqj"
 
 export const Resolve: React.FC<{ slug: string }> = ({ slug }) => {
-  const { activeAccount } = useInkathon();
-  const { contract } = useLinkContract();
+  const { activeAccount } = useInkathon()
+  const { contract } = useLinkContract()
+  const [notFound, setNotFound] = useState<boolean>()
 
   const mounted = useMemo(() => {
     return Date.now()
@@ -24,61 +25,72 @@ export const Resolve: React.FC<{ slug: string }> = ({ slug }) => {
 
     (async () => {
       try {
-        const caller = activeAccount?.address || DEFAULT_CALLER;
-        const result = await contract.query.resolve(slug, { caller });
+        const caller = activeAccount?.address || DEFAULT_CALLER
+        const { data } = await contract.query.resolve(slug, { caller })
 
-        if (result.data) {
-          const location = hexToString(result.data);
-          console.log('Resolved Location', location);
+        if (data) {
+          const location = hexToString(data)
+          console.log("Resolved url", location)
 
           if (mounted + DELAY < Date.now()) {
-            window.location.href = location;
+            window.location.href = location
           } else {
             setTimeout(
               () => {
-                window.location.href = location;
+                window.location.href = location
               },
               DELAY - (Date.now() - mounted),
             )
           }
         } else {
-          toast.error(`No register url at slug: ${slug}`);
-          setTimeout(() =>{
-            window.location.href = `/?slug=${slug}`;
-          }, 2_000);
+          toast.error(`No registered url for slug: ${slug}`)
+          setNotFound(true)
         }
       } catch (e: any) {
-        console.error(e);
+        console.error(e) // DispatchError, LangError ...
         toast.error("Unable to resolve link")
       }
-    })();
+    })()
   }, [contract])
 
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center">
       <main className="flex h-screen w-screen flex-col items-center justify-center">
-        <div className="pointer-events-none">
-          <Lottie
-            speed={2.5}
-            options={{
-              loop: false,
-              autoplay: true,
+        {notFound ? (
+          <>
+            <h1 className="text-[48px] mb-4 text-red-500">Oops!</h1>
+            <h1 className="text-2xl mb-8">Slug <b className='text-ink-text'>{slug}</b> not found.</h1>
 
-              animationData: animationData,
+            <a href="/" className="underline" target="_blank">
+              Shrink your own link?
+            </a>
+          </>
+        ) : (
+          <>
+            <div className="pointer-events-none">
+              <Lottie
+                speed={2.5}
+                options={{
+                  loop: false,
+                  autoplay: true,
 
-              rendererSettings: {
-                preserveAspectRatio: "xMidYMid slice",
-              },
-            }}
-            height={400}
-            width={400}
-          />
-        </div>
-        <h1 className="text-2xl text-ink-text">Upscaling link...</h1>
+                  animationData: animationData,
 
-        <a href="/" className="underline" target="_blank">
-          Shrink your own link?
-        </a>
+                  rendererSettings: {
+                    preserveAspectRatio: "xMidYMid slice",
+                  },
+                }}
+                height={400}
+                width={400}
+              />
+            </div>
+            <h1 className="text-2xl text-ink-text">Upscaling link...</h1>
+
+            <a href="/" className="underline" target="_blank">
+              Shrink your own link?
+            </a>
+          </>
+        )}
       </main>
       <div className="w-full py-2">
         <Footer />
