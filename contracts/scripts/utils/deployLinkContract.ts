@@ -4,7 +4,7 @@ import { ContractDeployer } from "dedot/contracts"
 import { LinkContractApi } from "deployments/types/link"
 import { assert, numberToHex } from "dedot/utils"
 
-export const deployContract = async (api: LegacyClient, account: IKeyringPair, abi: any, wasm: any): Promise<{ address: string, hash: string, blockNumber: number }> => {
+export const deployLinkContract = async (api: LegacyClient, account: IKeyringPair, abi: any, wasm: any): Promise<{ address: string, hash: string, blockNumber: number }> => {
   const deployer = new ContractDeployer<LinkContractApi>(api, abi, wasm);
   const salt = numberToHex(Date.now())
   const dryRun = await deployer.query.new({ caller: account.address, salt });

@@ -1,4 +1,4 @@
-import { Keyring } from "@polkadot/api"
+import { Keyring } from "@polkadot/keyring"
 import { IKeyringPair } from "@polkadot/types/types/interfaces"
 import { getSubstrateChain } from "@scio-labs/use-inkathon/chains"
 import { SubstrateChain, SubstrateExplorer } from "@scio-labs/use-inkathon/types"

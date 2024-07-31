@@ -1,7 +1,7 @@
 import { getDeploymentData } from "@/utils/getDeploymentData"
 import { initDedot } from "@/utils/initDedot"
 import { writeContractAddresses } from "@/utils/writeContractAddresses"
-import { deployContract } from "@/utils/deployContract"
+import { deployLinkContract } from "@/utils/deployLinkContract"
 
 /**
  * Script that deploys the greeter contract and writes its address to a file.
@@ -20,7 +20,7 @@ const main = async () => {
 
   // Deploy greeter contract
   const { abi, wasm } = await getDeploymentData('link');
-  const contract = await deployContract(api, account, abi, wasm);
+  const contract = await deployLinkContract(api, account, abi, wasm);
 
   // Write contract addresses to `{contract}/{network}.ts` file(s)
   await writeContractAddresses(chain.network, {
