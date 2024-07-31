@@ -145,7 +145,7 @@ export const LinkContractInteractions: FC = () => {
   )
 
   const host = useMemo<string>(() => {
-    return activeChain?.network === 'development' ? 'http://localhost:5173' : 'https://tiny.ink'
+    return activeChain?.network === 'development' ? 'http://localhost:5173' : 'https://link.dedot.dev'
   }, [activeChain]);
 
   return (
