@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import Lottie from "react-lottie"
-import animationData from "../../assets/resolve.json"
+import animationDataUrl from "../../assets/resolve.json?url"
 import { Footer } from "./footer"
 import toast from "react-hot-toast"
 import { hexToString } from "dedot/utils"
@@ -14,7 +14,15 @@ const DEFAULT_CALLER = "5EeG3x2qiUMU8LkRz4WGyy9kFhLY3u1AQwZz9aidvis58jqj"
 export const Resolve: React.FC<{ slug: string }> = ({ slug }) => {
   const { activeAccount } = useInkathon()
   const { contract } = useLinkContract()
-  const [notFound, setNotFound] = useState<boolean>()
+  const [notFound, setNotFound] = useState<boolean>();
+  const [animationData, setAnimationData] = useState<any>();
+
+  useEffect(() => {
+    (async () => {
+      const response = await fetch(animationDataUrl);
+      setAnimationData(await response.json());
+    })();
+  }, [])
 
   const mounted = useMemo(() => {
     return Date.now()
@@ -67,20 +75,23 @@ export const Resolve: React.FC<{ slug: string }> = ({ slug }) => {
           </>
         ) : (
           <>
-            <div className="pointer-events-none">
-              <Lottie
-                speed={4}
-                options={{
-                  loop: false,
-                  autoplay: true,
-                  animationData: animationData,
-                  rendererSettings: {
-                    preserveAspectRatio: "xMidYMid slice",
-                  },
-                }}
-                height={600}
-                width={600}
-              />
+            <div className="pointer-events-none h-[400px] w-[400px]">
+              {animationData && (
+                <Lottie
+                  speed={4}
+                  options={{
+                    loop: false,
+                    autoplay: true,
+                    animationData: animationData,
+                    rendererSettings: {
+                      preserveAspectRatio: "xMidYMid slice",
+                    },
+                  }}
+                  height={400}
+                  width={400}
+                />
+              )}
+
             </div>
             <h1 className="text-2xl text-ink-text">Upscaling link...</h1>
 
