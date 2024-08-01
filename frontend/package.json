@@ -42,7 +42,6 @@
     "zod": "^3.23.6"
   },
   "devDependencies": {
-    "@dedot/chaintypes": "^0.1.1",
     "@polkadot/extension-inject": "^0.49.3",
     "@polkadot/types": "^12.2.2",
     "@types/node": "^20.12.8",
