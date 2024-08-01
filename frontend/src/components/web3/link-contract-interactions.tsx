@@ -16,7 +16,7 @@ import { z } from "zod"
 import { cn } from "../../utils/cn"
 import { useInkathon } from "@/provider.tsx"
 import useLinkContract from "@/hooks/useLinkContract.ts"
-import { assert, stringToHex } from "dedot/utils"
+import { assert, hexToString, stringToHex } from "dedot/utils"
 import { ContractTxResult, contractTxWithToast } from "@/utils/contract-tx-with-toast.tsx"
 import { DispatchError } from 'dedot/codecs';
 import { isContractDispatchError, isContractLangError } from 'dedot/contracts';
@@ -113,13 +113,20 @@ export const LinkContractInteractions: FC = () => {
           return new Promise<ContractTxResult>((resolve, reject) => {
             contract.tx.shorten(linkMode, url, { gasLimit: raw.gasRequired})
               .signAndSend(activeAccount.address, (result) => {
-                const { status, dispatchError, txHash } = result;
+                const { status, dispatchError, txHash, events } = result;
                 console.log(status);
 
                 if (status.type === 'BestChainBlockIncluded' || status.type === 'Finalized') {
                   if (dispatchError) {
                     reject({ errorMessage: getDispatchErrorMessage(dispatchError) });
                   } else {
+                    const shortenedEvent = contract.events.Shortened.find(events);
+
+                    assert(shortenedEvent, "Shortened event not found" );
+                    console.log('Shortened event', shortenedEvent);
+                    console.log('Shortened slug', hexToString(shortenedEvent.data.slug));
+                    console.log('Shortened url', hexToString(shortenedEvent.data.url));
+
                     resolve({
                       extrinsicHash: txHash,
                       blockHash: status.value.blockHash
@@ -191,7 +198,7 @@ export const LinkContractInteractions: FC = () => {
                           "border-2 border-pink-500 focus-visible:ring-pink-600":
                             !!fieldState.error,
                         })}
-                        placeholder={"https://use.ink/"}
+                        placeholder={"https://link.dedot.dev"}
                         {...field}
                       />
                     </FormControl>
