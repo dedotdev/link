@@ -141,6 +141,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
 
       const _api = await Client.new({
         provider: new WsProvider(_chain.rpcUrls[0]),
+        cacheMetadata: true,
         ...apiOptions,
       });
 
