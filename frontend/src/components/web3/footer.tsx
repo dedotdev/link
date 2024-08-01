@@ -4,7 +4,7 @@ export const Footer = () => {
   return (
     <footer className="mt-4 flex w-full flex-col items-center justify-center gap-2">
       <div>
-        <div className="flex flex-row gap-2 text-black opacity-65 hover:cursor-pointer hover:opacity-80">
+        <div className="flex flex-row flex-wrap items-center justify-center gap-2 text-black opacity-65 hover:cursor-pointer hover:opacity-80">
           <a href="https://use.ink/" target="_blank" rel="noreferrer">
             <div>Proudly built with</div>
           </a>

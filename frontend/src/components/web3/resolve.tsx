@@ -7,7 +7,7 @@ import { hexToString } from "dedot/utils"
 import { useInkathon } from "@/provider.tsx"
 import useLinkContract from "@/hooks/useLinkContract.ts"
 
-const DELAY = 6000
+const DELAY = 2000;
 
 const DEFAULT_CALLER = "5EeG3x2qiUMU8LkRz4WGyy9kFhLY3u1AQwZz9aidvis58jqj"
 
@@ -69,19 +69,17 @@ export const Resolve: React.FC<{ slug: string }> = ({ slug }) => {
           <>
             <div className="pointer-events-none">
               <Lottie
-                speed={2.5}
+                speed={4}
                 options={{
                   loop: false,
                   autoplay: true,
-
                   animationData: animationData,
-
                   rendererSettings: {
                     preserveAspectRatio: "xMidYMid slice",
                   },
                 }}
-                height={400}
-                width={400}
+                height={600}
+                width={600}
               />
             </div>
             <h1 className="text-2xl text-ink-text">Upscaling link...</h1>
