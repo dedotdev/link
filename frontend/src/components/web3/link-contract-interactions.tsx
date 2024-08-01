@@ -65,6 +65,11 @@ export const LinkContractInteractions: FC = () => {
   }
 
   const dryRun = async (mode: LinkSlugCreationMode, url: string) => {
+    const balance = await api!.query.system.account(activeAccount!.address);
+    if (balance.data.free === 0n) {
+      throw new Error('Insufficient balance to submit transaction!');
+    }
+
     try {
       const { data, raw } = await contract!.query.shorten(
         mode, url,
@@ -86,10 +91,12 @@ export const LinkContractInteractions: FC = () => {
       console.error(error);
 
       if (isContractDispatchError(error)) {
+        console.error("Dispatch error:", error.dispatchError);
         throw new Error(getDispatchErrorMessage(error.dispatchError));
       }
 
       if (isContractLangError(error)) {
+        console.error("Language error:", error.langError);
         throw new Error(error.langError);
       }
 
