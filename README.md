@@ -24,15 +24,21 @@ pnpm typink
 dedot typink -m ./contracts/deployments/link/link.json -o ./contracts/deployments/types
 ```
 
-2. Start development application
-
-```shell
-pnpm dev
-```
-
-3. Deploy the contract. Make sure to have a local [subtrate-contract-node](https://github.com/paritytech/substrate-contracts-node) running on you local at https://127.0.0.1:9944
+2. Deploy the contract. Make sure to have a local [subtrate-contract-node](https://github.com/paritytech/substrate-contracts-node) running on you local at https://127.0.0.1:9944
 
 ```sh
 # In `contracts` folder
 pnpm run script deploy
+```
+
+3. Create a `.env.local` to specify default chain for local development in `frontend` folder
+
+```.env
+VITE_DEFAULT_CHAIN='development'
+```
+
+4. Start development application
+
+```shell
+pnpm dev
 ```
