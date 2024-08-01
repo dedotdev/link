@@ -28,7 +28,9 @@ import {
   useRef,
   useState,
 } from "react"
-import { ApiOptions, LegacyClient, WsProvider } from "dedot"
+import { ApiOptions, DedotClient, ISubstrateClient, LegacyClient, WsProvider } from "dedot"
+import { SubstrateApi } from "dedot/chaintypes"
+import { RpcVersion } from "dedot/types"
 
 type UseInkathonProviderContextType = {
   isInitializing?: boolean;
@@ -38,7 +40,7 @@ type UseInkathonProviderContextType = {
   error?: UseInkathonError;
   activeChain?: SubstrateChain;
   switchActiveChain?: (chain: SubstrateChain) => Promise<void>;
-  api?: LegacyClient;
+  api?: ISubstrateClient<SubstrateApi[RpcVersion]>;
   provider?: WsProvider;
   connect?: (chain?: SubstrateChain, wallet?: SubstrateWallet, lastActiveAccountAddress?: string) => Promise<void>;
   disconnect?: () => void;
@@ -106,7 +108,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       ? getSubstrateChain(defaultChain)
       : defaultChain) as SubstrateChain,
   )
-  const [api, setApi] = useState<LegacyClient>()
+  const [api, setApi] = useState<ISubstrateClient<SubstrateApi[RpcVersion]>>()
   const [provider, setProvider] = useState<WsProvider>()
   const [accounts, setAccounts] = useState<InjectedAccount[]>([])
   const [activeAccount, setActiveAccount] = useState<InjectedAccount>()
@@ -122,16 +124,22 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   }, [])
 
   // Initialize polkadot-js/api
-  const initialize = async (chain?: SubstrateChain): Promise<LegacyClient | undefined> => {
+  const initialize = async (chain?: SubstrateChain): Promise<DedotClient | undefined> => {
     isInitializing.current = true
     setIsConnected(false)
     setError(undefined)
 
     const _chain = chain || activeChain
-    let _api: LegacyClient | undefined
+    let _api: DedotClient | undefined
     let _provider: WsProvider | undefined
     try {
-      const _api = await LegacyClient.new({
+      // The current substrate-contract-node does not seem to working fine
+      // with the new JSON-RPC API, we'll use the LegacyClient for now in development
+      // For production, we should use the DedotClient which build on top of the new JSON-RPC specs.
+      const isDevelopment = _chain.network === 'development';
+      const Client = isDevelopment ? LegacyClient : DedotClient;
+
+      const _api = await Client.new({
         provider: new WsProvider(_chain.rpcUrls[0]),
         ...apiOptions,
       });
