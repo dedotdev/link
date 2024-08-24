@@ -8,13 +8,13 @@ import type {
   ContractTxOptions,
   ContractSubmittableExtrinsic,
 } from 'dedot/contracts';
-import type { LinkSlugCreationMode } from './types';
+import type { LinkSlugCreationModeLike } from './types';
 
 export interface ContractTx<ChainApi extends GenericSubstrateApi> extends GenericContractTx<ChainApi> {
   /**
    * Create a a new mapping or use an existing one.
    *
-   * @param {LinkSlugCreationMode} slug
+   * @param {LinkSlugCreationModeLike} slug
    * @param {BytesLike} url
    * @param {ContractTxOptions} options
    *
@@ -22,7 +22,11 @@ export interface ContractTx<ChainApi extends GenericSubstrateApi> extends Generi
    **/
   shorten: GenericContractTxCall<
     ChainApi,
-    (slug: LinkSlugCreationMode, url: BytesLike, options: ContractTxOptions) => ContractSubmittableExtrinsic<ChainApi>
+    (
+      slug: LinkSlugCreationModeLike,
+      url: BytesLike,
+      options: ContractTxOptions,
+    ) => ContractSubmittableExtrinsic<ChainApi>
   >;
 
   /**

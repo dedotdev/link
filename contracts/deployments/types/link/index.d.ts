@@ -12,8 +12,15 @@ import { ContractEvents } from './events';
 
 export * from './types';
 
+/**
+ * @name: LinkContractApi
+ * @contractName: link
+ * @contractVersion: 0.1.0
+ * @authors: Use Ink <ink@use.ink>
+ * @language: ink! 5.0.0
+ **/
 export interface LinkContractApi<
-  Rv extends RpcVersion = RpcV2,
+  Rv extends RpcVersion = RpcVersion,
   ChainApi extends VersionedGenericSubstrateApi = SubstrateApi,
 > extends GenericContractApi<Rv, ChainApi> {
   query: ContractQuery<ChainApi[Rv]>;

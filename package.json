@@ -33,6 +33,6 @@
     "simple-git-hooks": "^2.11.1",
     "typescript": "^5.4.5",
     "typesync": "^0.12.1",
-    "@dedot/cli": "^0.4.1"
+    "@dedot/cli": "^0.5.0"
   }
 }

@@ -9,13 +9,13 @@ import type {
   GenericContractCallResult,
   ContractCallResult,
 } from 'dedot/contracts';
-import type { LinkSlugCreationMode, LinkShorteningOutcome, LinkError, InkPrimitivesLangError } from './types';
+import type { LinkSlugCreationModeLike, LinkShorteningOutcome, LinkError, InkPrimitivesLangError } from './types';
 
 export interface ContractQuery<ChainApi extends GenericSubstrateApi> extends GenericContractQuery<ChainApi> {
   /**
    * Create a a new mapping or use an existing one.
    *
-   * @param {LinkSlugCreationMode} slug
+   * @param {LinkSlugCreationModeLike} slug
    * @param {BytesLike} url
    * @param {ContractCallOptions} options
    *
@@ -24,7 +24,7 @@ export interface ContractQuery<ChainApi extends GenericSubstrateApi> extends Gen
   shorten: GenericContractQueryCall<
     ChainApi,
     (
-      slug: LinkSlugCreationMode,
+      slug: LinkSlugCreationModeLike,
       url: BytesLike,
       options: ContractCallOptions,
     ) => Promise<GenericContractCallResult<Result<LinkShorteningOutcome, LinkError>, ContractCallResult<ChainApi>>>

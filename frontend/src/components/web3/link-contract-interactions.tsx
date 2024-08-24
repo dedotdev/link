@@ -16,11 +16,11 @@ import { z } from "zod"
 import { cn } from "../../utils/cn"
 import { useInkathon } from "@/provider.tsx"
 import useLinkContract from "@/hooks/useLinkContract.ts"
-import { assert, hexToString, stringToHex } from "dedot/utils"
+import { assert, hexToString } from "dedot/utils"
 import { ContractTxResult, contractTxWithToast } from "@/utils/contract-tx-with-toast.tsx"
-import { DispatchError } from 'dedot/codecs';
-import { isContractDispatchError, isContractLangError } from 'dedot/contracts';
-import { LinkSlugCreationMode } from "contracts/deployments/types/link/types"
+import { DispatchError } from "dedot/codecs"
+import { isContractDispatchError, isContractLangError } from "dedot/contracts"
+import { LinkSlugCreationModeLike } from "contracts/deployments/types/link/types"
 
 const slugParser = z
   .string()
@@ -64,7 +64,7 @@ export const LinkContractInteractions: FC = () => {
     }
   }
 
-  const dryRun = async (mode: LinkSlugCreationMode, url: string) => {
+  const dryRun = async (mode: LinkSlugCreationModeLike, url: string) => {
     const balance = await api!.query.system.account(activeAccount!.address);
     if (balance.data.free === 0n) {
       throw new Error('Insufficient balance to submit transaction!');
@@ -112,7 +112,7 @@ export const LinkContractInteractions: FC = () => {
         assert(activeAccount, "Signer not available");
 
         // Dry run
-        const linkMode: LinkSlugCreationMode = { type: 'New', value: stringToHex(slug) };
+        const linkMode: LinkSlugCreationModeLike = { type: 'New', value: slug };
 
         const { raw } = await dryRun(linkMode, url);
 
